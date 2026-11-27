@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Budget PH | Main Menu</title>
+
+<style>
+:root {
+    --dark: #0b4f3a;
+    --nav: #094633;
+    --green: #147f54;
+    --mint: #e6efe9;
+    --bg: #f7faf8;
+    --text: #16241e;
+    --muted: #6c7c74;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* HEADER */
+header {
+    background: var(--nav);
+    color: white;
+    padding: 20px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #8de0b5;
+}
+
+header nav {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+header nav a:hover {
+    color: #8de0b5;
+}
+
+/* HERO */
+.hero {
+    padding: 65px 6%;
+    background: linear-gradient(120deg, #0b4f3a, #147f54);
+    color: white;
+}
+
+.hero h1 {
+    font-size: clamp(30px, 5vw, 42px);
+    margin-bottom: 15px;
+}
+
+.hero p {
+    max-width: 600px;
+    line-height: 1.7;
+    font-size: 16px;
+    color: #e2f4e9;
+}
+
+.hero button {
+    margin-top: 25px;
+    padding: 13px 25px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: var(--dark);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.hero button:hover {
+    background: var(--mint);
+}
+
+/* MAIN CONTENT */
+.container {
+    width: 88%;
+    max-width: 1250px;
+    margin: 40px auto;
+}
+
+.section-title {
+    color: var(--dark);
+    margin-bottom: 10px;
+    font-size: 25px;
+}
+
+.description {
+    color: var(--muted);
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* MENU GRID */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.menu-card {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(11,79,58,.07);
+    transition: .25s;
+    border: 1px solid #edf2ee;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 22px rgba(11,79,58,.13);
+}
+
+.menu-icon {
+    width: 55px;
+    height: 55px;
+    background: var(--mint);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+    margin-bottom: 18px;
+}
+
+.menu-card h3 {
+    color: var(--dark);
+    margin-bottom: 10px;
+    font-size: 19px;
+}
+
+.menu-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    min-height: 45px;
+}
+
+.menu-card a {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: var(--green);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.menu-card a:hover {
+    text-decoration: underline;
+}
+
+/* WELCOME PANEL */
+.welcome {
+    background: var(--mint);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 35px;
+}
+
+.welcome h2 {
+    color: var(--dark);
+    margin-bottom: 10px;
+}
+
+.welcome p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* FOOTER */
+footer {
+    background: var(--nav);
+    color: white;
+    text-align: center;
+    padding: 22px;
+    margin-top: 60px;
+    font-size: 13px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 900px) {
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header nav {
+        gap: 15px;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        width: 92%;
+    }
+
+    .hero {
+        padding: 45px 6%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">Smart Budget <span>PH</span></div>
+
+    <nav>
+        <a href="main menu.html">Home</a>
+        <a href="index.html">Dashboard</a>
+        <a href="index.html">About</a>
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Welcome to Smart Budget PH</h1>
+
+    <p>
+        Manage your money wisely, monitor your expenses,
+        organize your budget, and achieve your savings goals.
+        Take control of your financial future with Smart Budget PH.
+    </p>
+
+    <button onclick="location.href='index.html'">
+        Open Budget Dashboard →
+    </button>
+</section>
+
+<!-- MAIN MENU -->
+<main class="container">
+
+    <div class="welcome">
+        <h2>Your Personal Budget Management Website</h2>
+        <p>
+            Choose a section below to manage your finances.
+            Smart Budget PH helps you track spending, monitor
+            your monthly budget, and keep track of your savings.
+        </p>
+    </div>
+
+    <h2 class="section-title">Main Menu</h2>
+
+    <p class="description">
+        Select the feature you want to access.
+    </p>
+
+    <div class="menu-grid">
+
+        <div class="menu-card">
+            <div class="menu-icon">🏠</div>
+            <h3>Dashboard</h3>
+            <p>
+                View your available balance, monthly spending,
+                and recent financial activities.
+            </p>
+            <a href="index.html">Open Dashboard →</a>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-icon">💸</div>
+            <h3>Expense History</h3>
+            <p>
+                Record, review, search, and organize
+                all your daily expenses.
+            </p>
+            <a href="index.html">Manage Expenses →</a>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-icon">📊</div>
+            <h3>Spending Analysis</h3>
+            <p>
+                Analyze your spending habits and
+                understand where your money goes.
+            </p>
+            <a href="index.html">View Analysis →</a>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-icon">🛒</div>
+            <h3>Category Budget</h3>
+            <p>
+                Set and monitor individual budgets
+                for groceries, restaurants, and other categories.
+            </p>
+            <a href="index.html">Manage Categories →</a>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-icon">💰</div>
+            <h3>Savings Goals</h3>
+            <p>
+                Track your savings deposits and
+                monitor your progress toward financial goals.
+            </p>
+            <a href="index.html">View Savings →</a>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-icon">⚙️</div>
+            <h3>Profile & Settings</h3>
+            <p>
+                Manage your budget preferences,
+                currency settings, and account information.
+            </p>
+            <a href="index.html">Open Settings →</a>
+        </div>
+
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 Smart Budget PH. All Rights Reserved.</p>
+    <p style="margin-top:7px;">
+        Manage Your Money. Build Your Future.
+    </p>
+</footer>
+
+</body>
+</html>

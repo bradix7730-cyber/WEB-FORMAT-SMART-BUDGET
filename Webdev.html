@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Budget PH | Personal Finance Dashboard</title>
+
+<style>
+:root {
+  --bg:#f5f8f6;
+  --white:#ffffff;
+  --dark:#0b4f3a;
+  --nav:#094633;
+  --green:#147f54;
+  --mint:#e6efe9;
+  --text:#16241e;
+  --muted:#718078;
+  --border:#e5ece8;
+  --pink:#e84b8a;
+  --gold:#d9a74a;
+  --shadow:0 3px 15px rgba(11,79,58,.06);
+}
+
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body {
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button,input,select {
+  font:inherit;
+}
+
+button {
+  cursor:pointer;
+}
+
+.layout {
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width:250px;
+  background:var(--nav);
+  color:white;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  padding:28px 18px;
+  display:flex;
+  flex-direction:column;
+  z-index:20;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 8px 35px;
+}
+
+.brand-icon {
+  width:43px;
+  height:43px;
+  background:#147f54;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+}
+
+.brand h2 {
+  font-size:18px;
+}
+
+.brand small {
+  display:block;
+  font-size:11px;
+  color:#b9d7c9;
+  margin-top:4px;
+}
+
+.nav-label {
+  font-size:10px;
+  color:#a8c5b8;
+  font-weight:bold;
+  letter-spacing:1.5px;
+  padding:12px;
+}
+
+.nav-btn {
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#c3d8ce;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 15px;
+  border-radius:10px;
+  text-align:left;
+  margin:3px 0;
+  font-size:14px;
+  transition:.2s;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  background:#147f54;
+  color:white;
+}
+
+.nav-icon {
+  font-size:19px;
+  width:22px;
+  text-align:center;
+}
+
+.sidebar-bottom {
+  margin-top:auto;
+  padding:15px;
+  border-radius:13px;
+  background:rgba(255,255,255,.08);
+  font-size:12px;
+  color:#c8ddd3;
+  line-height:1.7;
+}
+
+/* MAIN CONTENT */
+
+.main {
+  width:calc(100% - 250px);
+  margin-left:250px;
+  min-height:100vh;
+}
+
+.topbar {
+  height:75px;
+  background:white;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 35px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.topbar h3 {
+  color:var(--dark);
+  font-size:18px;
+}
+
+.top-right {
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.date {
+  color:var(--muted);
+  font-size:12px;
+}
+
+.profile-circle {
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:var(--mint);
+  color:var(--dark);
+  display:grid;
+  place-items:center;
+  font-weight:bold;
+}
+
+.content {
+  max-width:1500px;
+  margin:auto;
+  padding:32px 35px 50px;
+}
+
+.page {
+  display:none;
+}
+
+.page.active {
+  display:block;
+}
+
+.page-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.page-heading h1 {
+  font-size:26px;
+  color:var(--dark);
+}
+
+.page-heading p {
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* BUTTONS */
+
+.btn {
+  border:0;
+  background:var(--dark);
+  color:white;
+  padding:11px 18px;
+  border-radius:9px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.btn:hover {
+  background:var(--green);
+}
+
+.btn-light {
+  background:var(--mint);
+  color:var(--dark);
+}
+
+.btn-danger {
+  background:#fdecec;
+  color:#bd3434;
+}
+
+.btn-small {
+  padding:7px 11px;
+  font-size:11px;
+}
+
+/* CARDS */
+
+.grid {
+  display:grid;
+  gap:18px;
+}
+
+.stats-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  margin-bottom:22px;
+}
+
+.card {
+  background:white;
+  border-radius:14px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  border:1px solid #edf1ee;
+  min-width:0;
+}
+
+.stat-card {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.stat-card small {
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
+}
+
+.stat-card h2 {
+  font-size:25px;
+  color:var(--dark);
+  margin-top:12px;
+}
+
+.stat-icon {
+  width:48px;
+  height:48px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:var(--mint);
+}
+
+.stat-note {
+  font-size:11px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* DASHBOARD */
+
+.dashboard-grid {
+  grid-template-columns:1.6fr 1fr;
+  margin-bottom:22px;
+}
+
+.section-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  gap:10px;
+}
+
+.section-title h3 {
+  font-size:16px;
+  color:var(--dark);
+}
+
+.section-title small {
+  color:var(--muted);
+  font-size:11px;
+}
+
+.budget-number {
+  font-size:34px;
+  font-weight:800;
+  color:var(--green);
+  margin:15px 0 5px;
+}
+
+.progress {
+  height:10px;
+  border-radius:20px;
+  background:#eaf0ec;
+  overflow:hidden;
+  margin:15px 0;
+}
+
+.progress-fill {
+  height:100%;
+  background:var(--green);
+  border-radius:20px;
+  transition:.3s;
+}
+
+.budget-details {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.budget-actions {
+  display:flex;
+  gap:9px;
+  margin-top:20px;
+}
+
+/* CHART */
+
+.chart {
+  height:210px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-around;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+  padding:10px 5px 0;
+}
+
+.chart-col {
+  flex:1;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+
+.bar-track {
+  height:160px;
+  width:28px;
+  background:#eff3f0;
+  border-radius:8px;
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+}
+
+.bar-fill {
+  width:100%;
+  background:linear-gradient(180deg,#e84b8a,#f59abb);
+  border-radius:8px;
+  transition:height .3s;
+}
+
+.chart-col small {
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* CATEGORY */
+
+.category-grid {
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  margin-bottom:22px;
+}
+
+.category-item {
+  padding:18px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.category-item:hover {
+  border-color:var(--green);
+  transform:translateY(-2px);
+}
+
+.category-item h4 {
+  color:var(--dark);
+  font-size:13px;
+}
+
+.category-item strong {
+  display:block;
+  font-size:19px;
+  margin:13px 0 5px;
+}
+
+.category-item small {
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* TABLE */
+
+.table-wrap {
+  overflow-x:auto;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:550px;
+}
+
+th {
+  background:#f7faf8;
+  color:var(--muted);
+  text-align:left;
+  padding:13px;
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+td {
+  padding:15px 13px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+
+td strong {
+  color:var(--dark);
+}
+
+.amount {
+  font-weight:bold;
+  color:var(--dark);
+}
+
+.empty {
+  text-align:center;
+  color:var(--muted);
+  padding:30px;
+}
+
+/* INPUTS */
+
+.input {
+  width:100%;
+  border:1px solid var(--border);
+  background:#fbfdfc;
+  border-radius:9px;
+  padding:11px 12px;
+  outline:none;
+  font-size:13px;
+}
+
+.input:focus {
+  border-color:var(--green);
+}
+
+.filters {
+  display:flex;
+  gap:10px;
+  margin-bottom:17px;
+  flex-wrap:wrap;
+}
+
+.filters .input {
+  max-width:230px;
+}
+
+/* ANALYSIS */
+
+.analysis-grid {
+  grid-template-columns:1fr 1fr;
+}
+
+.pie {
+  width:210px;
+  height:210px;
+  border-radius:50%;
+  margin:20px auto;
+  background:#edf2ef;
+  position:relative;
+}
+
+.pie-hole {
+  position:absolute;
+  inset:45px;
+  border-radius:50%;
+  background:white;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:var(--dark);
+  font-weight:bold;
+}
+
+.legend {
+  display:grid;
+  gap:13px;
+  margin-top:15px;
+}
+
+.legend-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:13px;
+}
+
+.legend-left {
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.dot {
+  width:11px;
+  height:11px;
+  border-radius:4px;
+}
+
+/* SAVINGS */
+
+.savings-grid {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.goal-card {
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  background:white;
+}
+
+.goal-card h3 {
+  color:var(--dark);
+  font-size:15px;
+}
+
+.goal-card strong {
+  display:block;
+  margin:14px 0;
+  font-size:21px;
+  color:var(--green);
+}
+
+.goal-status {
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* MODAL */
+
+.modal {
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(5,30,20,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.open {
+  display:flex;
+}
+
+.modal-box {
+  background:white;
+  width:100%;
+  max-width:480px;
+  border-radius:16px;
+  padding:25px;
+  max-height:90vh;
+  overflow-y:auto;
+}
+
+.modal-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.modal-header h2 {
+  font-size:19px;
+  color:var(--dark);
+}
+
+.close {
+  border:0;
+  background:var(--mint);
+  width:32px;
+  height:32px;
+  border-radius:50%;
+}
+
+.field {
+  margin-bottom:15px;
+}
+
+.field label {
+  display:block;
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:7px;
+  color:var(--muted);
+}
+
+.field select,
+.field input {
+  width:100%;
+}
+
+.modal-footer {
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modal-footer button {
+  flex:1;
+}
+
+/* NOTIFICATION */
+
+.toast {
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  background:var(--dark);
+  color:white;
+  padding:13px 22px;
+  border-radius:10px;
+  font-size:13px;
+  z-index:200;
+  display:none;
+}
+
+.toast.show {
+  display:block;
+}
+
+/* RESPONSIVE */
+
+.mobile-menu {
+  display:none;
+  background:none;
+  border:0;
+  font-size:23px;
+  color:var(--dark);
+}
+
+@media(max-width:1100px) {
+  .stats-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .category-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:760px) {
+  .sidebar {
+    transform:translateX(-100%);
+    transition:.25s;
+  }
+
+  .sidebar.open {
+    transform:translateX(0);
+  }
+
+  .main {
+    width:100%;
+    margin-left:0;
+  }
+
+  .mobile-menu {
+    display:block;
+  }
+
+  .topbar {
+    padding:0 18px;
+    height:65px;
+  }
+
+  .content {
+    padding:24px 16px 40px;
+  }
+
+  .dashboard-grid,
+  .analysis-grid {
+    grid-template-columns:1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+
+  .stat-card {
+    padding:14px;
+  }
+
+  .stat-card h2 {
+    font-size:19px;
+  }
+
+  .stat-icon {
+    width:38px;
+    height:38px;
+    font-size:17px;
+  }
+
+  .category-grid {
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .savings-grid {
+    grid-template-columns:1fr;
+  }
+
+  .page-heading h1 {
+    font-size:22px;
+  }
+
+  .date {
+    display:none;
+  }
+}
+
+@media(max-width:420px) {
+  .stats-grid {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .page-heading {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .budget-number {
+    font-size:28px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">💰</div>
+    <div>
+      <h2>Smart Budget PH</h2>
+      <small>Personal Finance Manager</small>
+    </div>
+  </div>
+
+  <div class="nav-label">MAIN MENU</div>
+
+  <button class="nav-btn active" data-page="dashboard">
+    <span class="nav-icon">▦</span> Dashboard
+  </button>
+
+  <button class="nav-btn" data-page="expenses">
+    <span class="nav-icon">📋</span> Expense History
+  </button>
+
+  <button class="nav-btn" data-page="categories">
+    <span class="nav-icon">◈</span> Category Budgets
+  </button>
+
+  <button class="nav-btn" data-page="analysis">
+    <span class="nav-icon">📊</span> Spending Analysis
+  </button>
+
+  <button class="nav-btn" data-page="savings">
+    <span class="nav-icon">🐷</span> Savings
+  </button>
+
+  <div class="nav-label">ACCOUNT</div>
+
+  <button class="nav-btn" data-page="settings">
+    <span class="nav-icon">⚙</span> Settings
+  </button>
+
+  <div class="sidebar-bottom">
+    <strong>Smart Budget PH</strong><br>
+    Manage your money wisely.<br>
+    Philippines
+  </div>
+</aside>
+
+<!-- MAIN -->
+
+<main class="main">
+
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:15px">
+    <button class="mobile-menu" id="menuToggle">☰</button>
+    <h3 id="topTitle">Dashboard</h3>
+  </div>
+
+  <div class="top-right">
+    <span class="date" id="today"></span>
+    <div class="profile-circle">PH</div>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<section class="page active" id="dashboard">
+
+  <div class="page-heading">
+    <div>
+      <h1>Dashboard Overview</h1>
+      <p>Monitor your finances and manage your monthly budget.</p>
+    </div>
+    <button class="btn" onclick="openEntry('expense')">+ Add Transaction</button>
+  </div>
+
+  <div class="grid stats-grid">
+
+    <div class="card stat-card">
+      <div>
+        <small>Monthly Budget</small>
+        <h2 id="statBudget">₱9,800.00</h2>
+        <div class="stat-note">Your spending limit</div>
+      </div>
+      <div class="stat-icon">💰</div>
+    </div>
+
+    <div class="card stat-card">
+      <div>
+        <small>Total Expenses</small>
+        <h2 id="statExpense">₱0.00</h2>
+        <div class="stat-note">Current month</div>
+      </div>
+      <div class="stat-icon">💸</div>
+    </div>
+
+    <div class="card stat-card">
+      <div>
+        <small>Available Balance</small>
+        <h2 id="statAvailable">₱9,800.00</h2>
+        <div class="stat-note">Remaining budget</div>
+      </div>
+      <div class="stat-icon">📈</div>
+    </div>
+
+    <div class="card stat-card">
+      <div>
+        <small>Total Savings</small>
+        <h2 id="statSavings">₱0.00</h2>
+        <div class="stat-note">All-time deposits</div>
+      </div>
+      <div class="stat-icon">🐷</div>
+    </div>
+
+  </div>
+
+  <div class="grid dashboard-grid">
+
+    <div class="card">
+      <div class="section-title">
+        <div>
+          <h3>Monthly Budget Overview</h3>
+          <small id="budgetMonth"></small>
+        </div>
+        <button class="btn btn-light btn-small" onclick="editBudget()">Edit Budget</button>
+      </div>
+
+      <div class="budget-number" id="availableBig">₱9,800.00</div>
+      <small style="color:var(--muted)">Available balance</small>
+
+      <div class="progress">
+        <div class="progress-fill" id="budgetProgress" style="width:100%"></div>
+      </div>
+
+      <div class="budget-details">
+        <span id="spentLabel">Spent: ₱0.00</span>
+        <span id="limitLabel">Limit: ₱9,800.00</span>
+      </div>
+
+      <div class="budget-actions">
+        <button class="btn" onclick="openEntry('expense')">+ Add Expense</button>
+        <button class="btn btn-light" onclick="openEntry('saving')">+ Add Savings</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Quick Summary</h3>
+        <small>This month</small>
+      </div>
+
+      <div id="quickCategories"></div>
+    </div>
+
+  </div>
+
+  <div class="grid dashboard-grid">
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Monthly Spending</h3>
+        <select class="input" id="chartFilter" style="width:auto" onchange="renderDashboard()">
+          <option value="All">All Categories</option>
+          <option>Groceries</option>
+          <option>Restaurants</option>
+          <option>Merchandise</option>
+          <option>Supermarket</option>
+          <option>Services</option>
+          <option>Entertainment</option>
+        </select>
+      </div>
+
+      <div class="chart" id="monthlyChart"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Category Budgets</h3>
+        <button class="btn btn-light btn-small" onclick="navigate('categories')">View All</button>
+      </div>
+      <div id="categoryOverview"></div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      <h3>Recent Transactions</h3>
+      <button class="btn btn-light btn-small" onclick="navigate('expenses')">View All</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="recentTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<!-- EXPENSE HISTORY -->
+
+<section class="page" id="expenses">
+
+  <div class="page-heading">
+    <div>
+      <h1>Expense History</h1>
+      <p>Review, search, and manage all your transactions.</p>
+    </div>
+    <button class="btn" onclick="openEntry('expense')">+ Add Expense</button>
+  </div>
+
+  <div class="card">
+
+    <div class="filters">
+      <input class="input" id="searchExpense" placeholder="Search expenses..." oninput="renderExpenses()">
+
+      <select class="input" id="filterCategory" onchange="renderExpenses()">
+        <option value="All">All Categories</option>
+        <option>Groceries</option>
+        <option>Restaurants</option>
+        <option>Merchandise</option>
+        <option>Supermarket</option>
+        <option>Services</option>
+        <option>Entertainment</option>
+      </select>
+
+      <select class="input" id="filterMonth" onchange="renderExpenses()">
+        <option value="All">All Months</option>
+      </select>
+
+      <select class="input" id="sortExpenses" onchange="renderExpenses()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="highest">Highest Amount</option>
+        <option value="lowest">Lowest Amount</option>
+      </select>
+    </div>
+
+    <div class="section-title">
+      <h3>Transactions</h3>
+      <strong id="expenseCount">0 expenses</strong>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTable"></tbody>
+      </table>
+    </div>
+
+    <div style="text-align:right;margin-top:20px">
+      <strong id="filteredTotal">Total: ₱0.00</strong>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CATEGORY BUDGETS -->
+
+<section class="page" id="categories">
+
+  <div class="page-heading">
+    <div>
+      <h1>Category Budgets</h1>
+      <p>Set spending limits for your different expense categories.</p>
+    </div>
+  </div>
+
+  <div class="grid category-grid" id="categoryCards"></div>
+
+</section>
+
+<!-- ANALYSIS -->
+
+<section class="page" id="analysis">
+
+  <div class="page-heading">
+    <div>
+      <h1>Spending Analysis</h1>
+      <p>Understand where your money goes.</p>
+    </div>
+  </div>
+
+  <div class="grid analysis-grid">
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Expenses by Category</h3>
+        <small>All-time</small>
+      </div>
+
+      <div class="pie" id="pieChart">
+        <div class="pie-hole">
+          <div>
+            <small>Total Expenses</small>
+            <div id="pieTotal">₱0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend" id="pieLegend"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Financial Summary</h3>
+      </div>
+
+      <div id="financialSummary"></div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- SAVINGS -->
+
+<section class="page" id="savings">
+
+  <div class="page-heading">
+    <div>
+      <h1>Savings Management</h1>
+      <p>Track your savings and reach your financial goals.</p>
+    </div>
+
+    <button class="btn" onclick="openEntry('saving')">+ Deposit Savings</button>
+  </div>
+
+  <div class="card" style="margin-bottom:22px">
+    <small style="color:var(--muted)">TOTAL SAVINGS</small>
+    <h1 id="savingsTotal" style="font-size:36px;color:var(--green);margin-top:12px">₱0.00</h1>
+  </div>
+
+  <div class="grid savings-grid" id="savingsCards"></div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section class="page" id="settings">
+
+  <div class="page-heading">
+    <div>
+      <h1>Settings</h1>
+      <p>Manage your account and application preferences.</p>
+    </div>
+  </div>
+
+  <div class="card" style="max-width:700px">
+
+    <h3 style="color:var(--dark);margin-bottom:20px">Account Information</h3>
+
+    <div class="field">
+      <label>Application Name</label>
+      <input class="input" value="Smart Budget PH" readonly>
+    </div>
+
+    <div class="field">
+      <label>Currency</label>
+      <select class="input" id="currencySelect" onchange="changeCurrency(this.value)">
+        <option value="₱">Philippine Peso (₱)</option>
+        <option value="$">US Dollar ($)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Monthly Budget Limit</label>
+      <input class="input" id="settingsBudget" type="number" min="1" step="0.01">
+    </div>
+
+    <button class="btn" onclick="saveSettings()">Save Settings</button>
+
+    <hr style="border:0;border-top:1px solid var(--border);margin:25px 0">
+
+    <h3 style="color:#bd3434;margin-bottom:10px">Danger Zone</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:15px">
+      Permanently delete your saved transactions and savings.
+    </p>
+
+    <button class="btn btn-danger" onclick="clearData()">Clear All Data</button>
+
+  </div>
+
+</section>
+
+</div>
+</main>
+</div>
+
+<!-- ENTRY MODAL -->
+
+<div class="modal" id="entryModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2 id="modalTitle">Add Transaction</h2>
+      <button class="close" onclick="closeModal()">✕</button>
+    </div>
+
+    <form id="entryForm">
+
+      <input type="hidden" id="entryId">
+
+      <div class="field">
+        <label>Transaction Type</label>
+        <select class="input" id="entryType">
+          <option value="expense">Expense</option>
+          <option value="saving">Savings Deposit</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Amount</label>
+        <input class="input" type="number" id="entryAmount" min="0.01" step="0.01" placeholder="Enter amount" required>
+      </div>
+
+      <div id="expenseFields">
+
+        <div class="field">
+          <label>Category</label>
+          <select class="input" id="entryCategory">
+            <option>Groceries</option>
+            <option>Restaurants</option>
+            <option>Merchandise</option>
+            <option>Supermarket</option>
+            <option>Services</option>
+            <option>Entertainment</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Description / Store</label>
+          <input class="input" id="entryDescription" placeholder="Enter description">
+        </div>
+
+      </div>
+
+      <div class="field">
+        <label>Date</label>
+        <input class="input" type="date" id="entryDate" required>
+      </div>
+
+      <div id="savingFields" style="display:none">
+        <div class="field">
+          <label>Savings Goal</label>
+          <input class="input" id="savingGoal" value="Emergency Fund">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn">Save Transaction</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- BUDGET MODAL -->
+
+<div class="modal" id="budgetModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2 id="budgetModalTitle">Edit Budget</h2>
+      <button class="close" onclick="closeBudgetModal()">✕</button>
+    </div>
+
+    <form id="budgetForm">
+      <input type="hidden" id="budgetCategory">
+
+      <div class="field">
+        <label>Budget Limit</label>
+        <input class="input" type="number" min="1" step="0.01" id="budgetInput" required>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" onclick="closeBudgetModal()">Cancel</button>
+        <button class="btn">Update Budget</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* SMART BUDGET PH */
+
+const categories = {
+  Groceries: {icon:"🛒",color:"#147f54",budget:6000},
+  Restaurants: {icon:"🍽️",color:"#3b9df5",budget:3000},
+  Merchandise: {icon:"🛍️",color:"#f7a614",budget:4000},
+  Supermarket: {icon:"🏪",color:"#2546e3",budget:3500},
+  Services: {icon:"🛠️",color:"#e51b74",budget:2500},
+  Entertainment: {icon:"🎬",color:"#159f68",budget:2000}
+};
+
+const defaultState = () => ({
+  currency:"₱",
+  monthlyBudget:9800,
+  categoryBudgets:Object.fromEntries(
+    Object.entries(categories).map(([k,v])=>[k,v.budget])
+  ),
+  transactions:[],
+  savings:[]
+});
+
+let state;
+
+try {
+  const saved = localStorage.getItem("smartBudgetPHWebsite");
+  state = saved ? {...defaultState(),...JSON.parse(saved)} : defaultState();
+} catch {
+  state = defaultState();
+}
+
+function persist() {
+  try {
+    localStorage.setItem("smartBudgetPHWebsite",JSON.stringify(state));
+  } catch {
+    alert("Unable to save data in browser storage.");
+  }
+}
+
+function money(value) {
+  return state.currency + Number(value).toLocaleString("en-US",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+}
+
+function currentMonth() {
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+}
+
+function monthName(key) {
+  const [y,m] = key.split("-");
+  return new Date(Number(y),Number(m)-1,1)
+    .toLocaleDateString("en-US",{month:"short",year:"numeric"});
+}
+
+function currentExpenses() {
+  return state.transactions.filter(t=>t.date.startsWith(currentMonth()));
+}
+
+function sum(items) {
+  return items.reduce((total,item)=>total+Number(item.amount),0);
+}
+
+function totalSavings() {
+  return sum(state.savings);
+}
+
+function notify(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),2200);
+}
+
+/* NAVIGATION */
+
+function navigate(page) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+
+  document.getElementById(page).classList.add("active");
+
+  const btn = document.querySelector('[data-page="'+page+'"]');
+  if(btn) btn.classList.add("active");
+
+  const titles = {
+    dashboard:"Dashboard",
+    expenses:"Expense History",
+    categories:"Category Budgets",
+    analysis:"Spending Analysis",
+    savings:"Savings",
+    settings:"Settings"
+  };
+
+  document.getElementById("topTitle").textContent=titles[page];
+
+  document.getElementById("sidebar").classList.remove("open");
+
+  renderAll();
+}
+
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>navigate(btn.dataset.page));
+});
+
+document.getElementById("menuToggle").onclick=()=>{
+  document.getElementById("sidebar").classList.toggle("open");
+};
+
+/* ENTRY MODAL */
+
+function openEntry(type="expense",id=null) {
+  const form = document.getElementById("entryForm");
+  form.reset();
+
+  document.getElementById("entryId").value="";
+  document.getElementById("entryType").value=type;
+  document.getElementById("entryDate").value=
+    new Date().toISOString().slice(0,10);
+
+  if(id!==null) {
+    const item=state.transactions.find(t=>t.id===id);
+    if(!item)return;
+
+    document.getElementById("entryId").value=id;
+    document.getElementById("entryAmount").value=item.amount;
+    document.getElementById("entryCategory").value=item.category;
+    document.getElementById("entryDescription").value=item.description;
+    document.getElementById("entryDate").value=item.date;
+    document.getElementById("modalTitle").textContent="Edit Expense";
+  } else {
+    document.getElementById("modalTitle").textContent=
+      type==="expense"?"Add Expense":"Add Savings";
+  }
+
+  document.getElementById("entryModal").classList.add("open");
+  updateEntryFields();
+}
+
+function updateEntryFields() {
+  const type=document.getElementById("entryType").value;
+  document.getElementById("expenseFields").style.display=
+    type==="expense"?"block":"none";
+  document.getElementById("savingFields").style.display=
+    type==="saving"?"block":"none";
+
+  document.getElementById("entryDescription").required=type==="expense";
+}
+
+document.getElementById("entryType").onchange=updateEntryFields;
+
+function closeModal() {
+  document.getElementById("entryModal").classList.remove("open");
+}
+
+document.getElementById("entryForm").onsubmit=e=>{
+  e.preventDefault();
+
+  const id=document.getElementById("entryId").value;
+  const type=document.getElementById("entryType").value;
+  const amount=Number(document.getElementById("entryAmount").value);
+  const date=document.getElementById("entryDate").value;
+
+  if(!amount||amount<=0||!date)return;
+
+  if(type==="expense") {
+    const item={
+      id:id?Number(id):Date.now(),
+      amount,
+      date,
+      category:document.getElementById("entryCategory").value,
+      description:document.getElementById("entryDescription").value.trim()
+    };
+
+    if(id) {
+      const index=state.transactions.findIndex(t=>t.id===Number(id));
+      if(index!==-1)state.transactions[index]=item;
+    } else {
+      state.transactions.push(item);
+    }
+
+    notify(id?"Expense updated":"Expense added successfully");
+  } else {
+    state.savings.push({
+      id:Date.now(),
+      amount,
+      date,
+      goal:document.getElementById("savingGoal").value.trim()||"General Savings"
+    });
+
+    notify("Savings deposited successfully");
+  }
+
+  persist();
+  closeModal();
+  renderAll();
+};
+
+/* DELETE */
+
+function deleteExpense(id) {
+  if(!confirm("Delete this expense?"))return;
+
+  state.transactions=state.transactions.filter(t=>t.id!==id);
+  persist();
+  renderAll();
+  notify("Expense deleted");
+}
+
+function deleteSaving(id) {
+  if(!confirm("Delete this savings deposit?"))return;
+
+  state.savings=state.savings.filter(t=>t.id!==id);
+  persist();
+  renderAll();
+  notify("Savings entry deleted");
+}
+
+/* BUDGETS */
+
+function editBudget(category=null) {
+  document.getElementById("budgetCategory").value=category||"";
+  document.getElementById("budgetModalTitle").textContent=
+    category?"Edit "+category+" Budget":"Edit Monthly Budget";
+
+  document.getElementById("budgetInput").value=
+    category?state.categoryBudgets[category]:state.monthlyBudget;
+
+  document.getElementById("budgetModal").classList.add("open");
+}
+
+function closeBudgetModal() {
+  document.getElementById("budgetModal").classList.remove("open");
+}
+
+document.getElementById("budgetForm").onsubmit=e=>{
+  e.preventDefault();
+
+  const category=document.getElementById("budgetCategory").value;
+  const value=Number(document.getElementById("budgetInput").value);
+
+  if(!value||value<=0)return;
+
+  if(category) {
+    state.categoryBudgets[category]=value;
+  } else {
+    state.monthlyBudget=value;
+  }
+
+  persist();
+  closeBudgetModal();
+  renderAll();
+  notify("Budget updated successfully");
+};
+
+/* DASHBOARD */
+
+function renderDashboard() {
+  const expenses=currentExpenses();
+  const spent=sum(expenses);
+  const available=state.monthlyBudget-spent;
+
+  document.getElementById("statBudget").textContent=money(state.monthlyBudget);
+  document.getElementById("statExpense").textContent=money(spent);
+  document.getElementById("statAvailable").textContent=money(available);
+  document.getElementById("statSavings").textContent=money(totalSavings());
+
+  document.getElementById("availableBig").textContent=money(available);
+  document.getElementById("spentLabel").textContent="Spent: "+money(spent);
+  document.getElementById("limitLabel").textContent="Limit: "+money(state.monthlyBudget);
+
+  document.getElementById("budgetMonth").textContent=
+    new Date().toLocaleDateString("en-US",{month:"long",year:"numeric"});
+
+  const percentage=state.monthlyBudget>0?
+    Math.min(100,Math.max(0,spent/state.monthlyBudget*100)):0;
+
+  document.getElementById("budgetProgress").style.width=percentage+"%";
+
+  document.getElementById("quickCategories").innerHTML=
+    Object.keys(categories).map(category=>{
+      const total=sum(expenses.filter(t=>t.category===category));
+      return `
+        <div style="margin-bottom:17px">
+          <div class="budget-details">
+            <strong>${categories[category].icon} ${category}</strong>
+            <span>${money(total)}</span>
+          </div>
+          <div class="progress" style="height:7px">
+            <div class="progress-fill"
+              style="width:${Math.min(100,total/(state.categoryBudgets[category]||1)*100)}%;
+              background:${categories[category].color}"></div>
+          </div>
+        </div>`;
+    }).join("");
+
+  const filter=document.getElementById("chartFilter").value;
+  const months=[];
+
+  for(let i=5;i>=0;i--) {
+    const d=new Date();
+    d.setDate(1);
+    d.setMonth(d.getMonth()-i);
+    const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+
+    const total=sum(state.transactions.filter(t=>
+      t.date.startsWith(key)&&
+      (filter==="All"||t.category===filter)
+    ));
+
+    months.push({name:d.toLocaleDateString("en-US",{month:"short"}),total});
+  }
+
+  const max=Math.max(100,...months.map(m=>m.total));
+
+  document.getElementById("monthlyChart").innerHTML=
+    months.map(m=>`
+      <div class="chart-col">
+        <div class="bar-track">
+          <div class="bar-fill" style="height:${m.total/max*100}%"></div>
+        </div>
+        <small>${m.name}</small>
+      </div>
+    `).join("");
+
+  document.getElementById("categoryOverview").innerHTML=
+    Object.keys(categories).map(category=>{
+      const total=sum(expenses.filter(t=>t.category===category));
+      const limit=state.categoryBudgets[category]||1;
+
+      return `
+        <div style="margin-bottom:15px">
+          <div class="budget-details">
+            <strong>${category}</strong>
+            <span>${money(total)} / ${money(limit)}</span>
+          </div>
+          <div class="progress" style="height:7px">
+            <div class="progress-fill"
+              style="width:${Math.min(100,total/limit*100)}%"></div>
+          </div>
+        </div>`;
+    }).join("");
+
+  const recent=[...state.transactions]
+    .sort((a,b)=>b.id-a.id).slice(0,5);
+
+  document.getElementById("recentTable").innerHTML=
+    recent.length?recent.map(t=>transactionRow(t)).join("") :
+    `<tr><td colspan="5" class="empty">No expenses recorded yet.</td></tr>`;
+}
+
+/* TRANSACTION ROW */
+
+function transactionRow(t) {
+  return `
+    <tr>
+      <td><strong>${escapeHTML(t.description)}</strong></td>
+      <td>${escapeHTML(t.category)}</td>
+      <td>${t.date}</td>
+      <td class="amount">${money(t.amount)}</td>
+      <td>
+        <button class="btn btn-light btn-small"
+          onclick="openEntry('expense',${t.id})">Edit</button>
+        <button class="btn btn-danger btn-small"
+          onclick="deleteExpense(${t.id})">Delete</button>
+      </td>
+    </tr>`;
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+/* EXPENSE HISTORY */
+
+function renderExpenses() {
+  const search=document.getElementById("searchExpense").value.toLowerCase();
+  const category=document.getElementById("filterCategory").value;
+  const month=document.getElementById("filterMonth").value;
+  const sort=document.getElementById("sortExpenses").value;
+
+  let list=state.transactions.filter(t=>{
+    const matchSearch=
+      t.description.toLowerCase().includes(search)||
+      t.category.toLowerCase().includes(search);
+
+    return matchSearch&&
+      (category==="All"||t.category===category)&&
+      (month==="All"||t.date.startsWith(month));
+  });
+
+  list.sort((a,b)=>{
+    if(sort==="highest")return b.amount-a.amount;
+    if(sort==="lowest")return a.amount-b.amount;
+    if(sort==="oldest")return a.id-b.id;
+    return b.id-a.id;
+  });
+
+  document.getElementById("expenseCount").textContent=
+    list.length+" expenses";
+
+  document.getElementById("filteredTotal").textContent=
+    "Total: "+money(sum(list));
+
+  document.getElementById("expenseTable").innerHTML=
+    list.length?list.map(t=>transactionRow(t)).join("") :
+    `<tr><td colspan="5" class="empty">No matching expenses found.</td></tr>`;
+}
+
+function populateMonths() {
+  const select=document.getElementById("filterMonth");
+  const previous=select.value;
+
+  const months=[...new Set(state.transactions.map(t=>t.date.slice(0,7)))].sort().reverse();
+
+  select.innerHTML='<option value="All">All Months</option>'+
+    months.map(m=>`<option value="${m}">${monthName(m)}</option>`).join("");
+
+  if([...select.options].some(o=>o.value===previous)) {
+    select.value=previous;
+  }
+}
+
+/* CATEGORY BUDGETS */
+
+function renderCategories() {
+  const expenses=currentExpenses();
+
+  document.getElementById("categoryCards").innerHTML=
+    Object.keys(categories).map(category=>{
+      const total=sum(expenses.filter(t=>t.category===category));
+      const limit=state.categoryBudgets[category]||0;
+      const remaining=limit-total;
+      const pct=limit>0?Math.min(100,total/limit*100):0;
+
+      return `
+        <div class="category-item" onclick="editBudget('${category}')">
+          <div style="display:flex;justify-content:space-between">
+            <h4>${categories[category].icon} ${category}</h4>
+            <span>✎</span>
+          </div>
+          <strong>${money(remaining)}</strong>
+          <small>Available out of ${money(limit)}</small>
+          <div class="progress">
+            <div class="progress-fill" style="width:${pct}%"></div>
+          </div>
+          <small>Spent: ${money(total)}</small>
+        </div>`;
+    }).join("");
+}
+
+/* ANALYSIS */
+
+function renderAnalysis() {
+  const totals=Object.keys(categories).map(category=>({
+    category,
+    amount:sum(state.transactions.filter(t=>t.category===category))
+  })).filter(x=>x.amount>0);
+
+  const total=sum(totals);
+  const colors=totals.map(x=>categories[x.category].color);
+
+  let current=0;
+  const segments=totals.map(x=>{
+    const pct=total?x.amount/total*100:0;
+    const start=current;
+    current+=pct;
+    return `${categories[x.category].color} ${start}% ${current}%`;
+  });
+
+  document.getElementById("pieChart").style.background=
+    total?"conic-gradient("+segments.join(",")+")":"#edf2ef";
+
+  document.getElementById("pieTotal").textContent=money(total);
+
+  document.getElementById("pieLegend").innerHTML=
+    totals.length?totals.map(x=>`
+      <div class="legend-item">
+        <div class="legend-left">
+          <span class="dot" style="background:${categories[x.category].color}"></span>
+          <span>${x.category}</span>
+        </div>
+        <strong>${money(x.amount)}</strong>
+      </div>
+    `).join("") :
+    '<div class="empty">No expenses available for analysis.</div>';
+
+  document.getElementById("financialSummary").innerHTML=`
+    <div style="padding:16px 0;border-bottom:1px solid var(--border)">
+      <small style="color:var(--muted)">All-Time Expenses</small>
+      <h2 style="color:var(--dark);margin-top:7px">${money(total)}</h2>
+    </div>
+    <div style="padding:16px 0;border-bottom:1px solid var(--border)">
+      <small style="color:var(--muted)">Total Savings</small>
+      <h2 style="color:var(--green);margin-top:7px">${money(totalSavings())}</h2>
+    </div>
+    <div style="padding:16px 0">
+      <small style="color:var(--muted)">Number of Transactions</small>
+      <h2 style="color:var(--dark);margin-top:7px">${state.transactions.length}</h2>
+    </div>
+  `;
+}
+
+/* SAVINGS */
+
+function renderSavings() {
+  const total=totalSavings();
+
+  document.getElementById("savingsTotal").textContent=money(total);
+
+  document.getElementById("savingsCards").innerHTML=
+    state.savings.length?state.savings.map(s=>`
+      <div class="goal-card">
+        <h3>🐷 ${escapeHTML(s.goal)}</h3>
+        <strong>${money(s.amount)}</strong>
+        <div class="goal-status">${s.date}</div>
+        <div style="margin-top:15px">
+          <button class="btn btn-danger btn-small"
+            onclick="deleteSaving(${s.id})">Delete Deposit</button>
+        </div>
+      </div>
+    `).join("") :
+    '<div class="card empty">No savings deposits yet. Start saving today!</div>';
+}
+
+/* SETTINGS */
+
+function changeCurrency(value) {
+  state.currency=value;
+  persist();
+  renderAll();
+}
+
+function saveSettings() {
+  const value=Number(document.getElementById("settingsBudget").value);
+
+  if(!value||value<=0) {
+    alert("Enter a valid budget.");
+    return;
+  }
+
+  state.monthlyBudget=value;
+  persist();
+  renderAll();
+  notify("Settings saved");
+}
+
+function clearData() {
+  if(!confirm("Are you sure? This will permanently delete all transactions and savings."))return;
+
+  state=defaultState();
+  persist();
+  renderAll();
+  notify("All data cleared");
+}
+
+/* RENDER EVERYTHING */
+
+function renderAll() {
+  document.getElementById("currencySelect").value=state.currency;
+  document.getElementById("settingsBudget").value=state.monthlyBudget;
+
+  renderDashboard();
+  populateMonths();
+  renderExpenses();
+  renderCategories();
+  renderAnalysis();
+  renderSavings();
+}
+
+/* INITIALIZATION */
+
+document.getElementById("today").textContent=
+  new Date().toLocaleDateString("en-PH",{
+    weekday:"short",
+    year:"numeric",
+    month:"long",
+    day:"numeric"
+  });
+
+document.getElementById("budgetMonth").textContent=
+  new Date().toLocaleDateString("en-US",{month:"long",year:"numeric"});
+
+renderAll();
+
+</script>
+
+</body>
+</html>
